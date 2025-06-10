@@ -8,19 +8,17 @@ def setup_airflow_config():
     load_dotenv()
     
     # Set up Variables
-    Variable.set("spotify_client_id", os.getenv("SPOTIFY_CLIENT_ID"))
-    Variable.set("spotify_client_secret", os.getenv("SPOTIFY_CLIENT_SECRET"))
     Variable.set("s3_bucket_name", os.getenv("S3_BUCKET_NAME"))
     
     # Set up Connections
     session = settings.Session()
     
-    # Spotify connection
-    spotify_conn = Connection(
-        conn_id='spotify_default',
-        conn_type='spotify',
-        login=os.getenv("SPOTIFY_CLIENT_ID"),
-        password=os.getenv("SPOTIFY_CLIENT_SECRET")
+    # Shopify connection
+    shopify_conn = Connection(
+        conn_id='shopify_default',
+        conn_type='http',
+        host=os.getenv("SHOPIFY_STORE_URL"),
+        password=os.getenv("SHOPIFY_ACCESS_TOKEN")
     )
     
     # AWS connection
@@ -32,8 +30,8 @@ def setup_airflow_config():
     )
     
     # Add connections if they don't exist
-    if not session.query(Connection).filter(Connection.conn_id == spotify_conn.conn_id).first():
-        session.add(spotify_conn)
+    if not session.query(Connection).filter(Connection.conn_id == shopify_conn.conn_id).first():
+        session.add(shopify_conn)
     
     if not session.query(Connection).filter(Connection.conn_id == aws_conn.conn_id).first():
         session.add(aws_conn)

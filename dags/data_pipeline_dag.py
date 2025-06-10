@@ -4,7 +4,7 @@ from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.models import Variable
 
-from plugins.spotify_operator import SpotifyOperator
+from plugins.shopify_operator import ShopifyOperator
 from plugins.s3_operator import S3Operator
 
 default_args = {
@@ -19,26 +19,26 @@ default_args = {
 with DAG(
     'data_pipeline',
     default_args=default_args,
-    description='Pipeline for Spotify and S3 data ingestion',
+    description='Pipeline for Shopify and S3 data ingestion',
     schedule_interval=timedelta(days=1),
     start_date=datetime(2024, 1, 1),
     catchup=False,
-    tags=['spotify', 's3', 'data_pipeline'],
+    tags=['shopify', 's3', 'data_pipeline'],
 ) as dag:
 
-    # Spotify data extraction
-    spotify_extract = SpotifyOperator(
-        task_id='spotify_extract',
-        spotify_client_id=Variable.get('spotify_client_id'),
-        spotify_client_secret=Variable.get('spotify_client_secret'),
-        postgres_conn_id='postgres_default'
+    # Shopify data extraction
+    shopify_extract = ShopifyOperator(
+        task_id='shopify_extract',
+        shopify_conn_id='shopify_default',
+        postgres_conn_id='postgres_default',
+        days_back=2,
+        max_workers=5
     )
 
     # S3 data extraction
     s3_extract = S3Operator(
         task_id='s3_extract',
-        aws_access_key_id=Variable.get('aws_access_key_id'),
-        aws_secret_access_key=Variable.get('aws_secret_access_key'),
+        aws_conn_id='aws_default',
         bucket_name=Variable.get('s3_bucket_name'),
         postgres_conn_id='postgres_default'
     )
@@ -51,4 +51,4 @@ with DAG(
     )
 
     # Set task dependencies
-    [spotify_extract, s3_extract] >> dbt_run 
+    [shopify_extract, s3_extract] >> dbt_run 

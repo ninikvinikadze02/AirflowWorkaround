@@ -32,6 +32,9 @@ services:
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - ./config:/opt/airflow/config
+      - ./scripts:/opt/airflow/scripts
+      - ./dbt:/opt/airflow/dbt
+      - ./.env:/opt/airflow/.env
     ports:
       - "8080:8080"
     command: webserver
@@ -57,7 +60,23 @@ services:
       - ./logs:/opt/airflow/logs
       - ./plugins:/opt/airflow/plugins
       - ./config:/opt/airflow/config
+      - ./scripts:/opt/airflow/scripts
+      - ./dbt:/opt/airflow/dbt
+      - ./.env:/opt/airflow/.env
     command: scheduler
+
+  # Add dbt service for running transformations
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:1.6.0
+    depends_on:
+      - postgres
+    volumes:
+      - ./dbt:/usr/app/dbt
+      - ./.env:/usr/app/.env
+    environment:
+      - DBT_PROFILES_DIR=/usr/app/dbt
+    working_dir: /usr/app/dbt
+    command: run
 
 volumes:
   postgres-db-volume: 
