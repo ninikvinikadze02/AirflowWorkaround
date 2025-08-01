@@ -19,7 +19,6 @@ clean-targets:
 models:
   data_pipeline:
     materialized: table
-    spotify:
+    shopify:
       materialized: table
-    s3:
-      materialized: table 
+      schema: shopify_analytics

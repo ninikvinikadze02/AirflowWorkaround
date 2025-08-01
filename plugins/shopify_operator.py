@@ -51,11 +51,12 @@ class ShopifyOperator(BaseOperator):
             # Convert to DataFrame
             df = pd.json_normalize(data)
             
-            # Save to PostgreSQL
-            table_name = f'shopify_{data_type}'
+            # Save to PostgreSQL in raw_shopify schema
+            table_name = f'raw_shopify.shopify_{data_type}'
             df.to_sql(
-                table_name,
+                f'shopify_{data_type}',
                 engine,
+                schema='raw_shopify',
                 if_exists='replace',
                 index=False
             )

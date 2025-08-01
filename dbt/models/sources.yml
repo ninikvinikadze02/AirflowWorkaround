@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: raw
+    schema: raw_shopify
+    tables:
+      - name: shopify_orders
+        description: "Raw Shopify orders data from API"
+      - name: shopify_products
+        description: "Raw Shopify products data from API"
+      - name: shopify_inventory
+        description: "Raw Shopify inventory data from API" 

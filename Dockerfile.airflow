@@ -1,0 +1,15 @@
+FROM apache/airflow:2.7.1
+
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install dbt-postgres in the airflow user's environment
+USER airflow
+RUN pip install --user dbt-postgres>=1.6.0
+
+USER root 

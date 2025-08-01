@@ -35,9 +35,10 @@ services:
       - ./scripts:/opt/airflow/scripts
       - ./dbt:/opt/airflow/dbt
       - ./.env:/opt/airflow/.env
+      - ./requirements.txt:/requirements.txt
     ports:
-      - "8080:8080"
-    command: webserver
+      - "8081:8080"
+    command: bash -c "pip install -r /requirements.txt && airflow webserver"
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
@@ -63,20 +64,8 @@ services:
       - ./scripts:/opt/airflow/scripts
       - ./dbt:/opt/airflow/dbt
       - ./.env:/opt/airflow/.env
-    command: scheduler
-
-  # Add dbt service for running transformations
-  dbt:
-    image: ghcr.io/dbt-labs/dbt-postgres:1.6.0
-    depends_on:
-      - postgres
-    volumes:
-      - ./dbt:/usr/app/dbt
-      - ./.env:/usr/app/.env
-    environment:
-      - DBT_PROFILES_DIR=/usr/app/dbt
-    working_dir: /usr/app/dbt
-    command: run
+      - ./requirements.txt:/requirements.txt
+    command: bash -c "pip install -r /requirements.txt && airflow scheduler"
 
 volumes:
   postgres-db-volume: 
