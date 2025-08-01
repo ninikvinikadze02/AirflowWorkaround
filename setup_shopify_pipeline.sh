@@ -13,11 +13,6 @@ if [ ! -f .env ]; then
 # Shopify API Configuration
 
 # Database Configuration
-POSTGRES_USER=airflow
-POSTGRES_PASSWORD=airflow
-POSTGRES_DB=airflow
-POSTGRES_HOST=postgres
-POSTGRES_PORT=5432
 EOF
     echo "Please update .env file with your Shopify credentials"
 fi
