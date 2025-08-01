@@ -11,8 +11,6 @@ if [ ! -f .env ]; then
     echo "Creating .env file..."
     cat > .env << EOF
 # Shopify API Configuration
-SHOPIFY_STORE_URL=store.myshopify.com
-SHOPIFY_ACCESS_TOKEN=token
 
 # Database Configuration
 POSTGRES_USER=airflow
